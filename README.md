@@ -1,1 +1,0 @@
-# gr06-munthrift-docs
