@@ -15,9 +15,8 @@
 - **Description**: Users can browse and order free items from the catalog
 - **Implementation**: 
   - Item list screen displaying free items
-  - Product detail page showing item info and retrieval location
+  - Product detail page showing item info
   - Order button to reserve items
-  - Delivery or self-pickup options
   - Order tracking and management
 
 ### ✅ Trade Items Catalog
@@ -165,22 +164,25 @@
 
 ### Directory Structure
 
-#### **`lib/`** - Main Application Code
-The core Flutter application code is organized into several subdirectories:
+#### **`lib`**
+- `main.dart` - Application entry point, Firebase initialization
+- `router.dart` - GoRouter configuration for navigation
+- `firebase_options.dart` - Firebase configuration
 
-##### **`lib/screens/`** - UI Screens
+#### **`lib/screens/`** - UI Screens
 Contains all the app's user interface screens (22 screens total):
 - **Authentication**: `login_screen.dart`, `signup_screen.dart`, `forgot_password_screen.dart`
 - **Main Navigation**: `bottom_nav_bar.dart`, `item_list_screen.dart`, `search_screen.dart`, `profile_screen.dart`
-- **Shopping**: `cart_screen.dart`, `checkout_screen.dart`, `product_page.dart`
-- **Item Management**: `create_listing_screen.dart`, `list_item.dart`
+- **Shopping**: `cart_screen.dart`, `checkout_screen.dart`, `product_page.dart`, `list_item.dart`
+- **Item Management**: `create_listing_screen.dart`
 - **Orders**: `order_history_screen.dart`, `order_details_screen.dart`, `seller_orders_screen.dart`
 - **Communication**: `chat_list_screen.dart`, `chat_screen.dart`
 - **Trading**: `trade_offer_screen.dart`, `trade_offer_details_screen.dart`
 - **User Profile**: `edit_profile_screen.dart`, `external_profile_screen.dart`
 - **Notifications**: `notifications_screen.dart`
 
-##### **`lib/services/`** - Business Logic & Firebase Integration
+
+#### **`lib/services/`** - Business Logic & Firebase Integration
 Contains service classes that handle data operations and Firebase interactions:
 - `auth_service.dart` - Firebase Authentication management
 - `firestore_service.dart` - Firestore database operations
@@ -188,9 +190,9 @@ Contains service classes that handle data operations and Firebase interactions:
 - `cart_service.dart` - Shopping cart logic
 - `chat_service.dart` - Real-time chat functionality
 - `notification_service.dart` - Push notification handling
-- `reviews_service.dart` - User reviews and ratings
+- `reviews_service.dart` - User reviews
 
-##### **`lib/models/`** - Data Models
+#### **`lib/models/`** - Data Models
 Data classes representing app entities:
 - `user_info.dart` - User profile data
 - `item.dart` - Product/item listings
@@ -201,16 +203,12 @@ Data classes representing app entities:
 - `trade_offer.dart` - Trade offer details
 - `review.dart` - User reviews
 
-##### **`lib/controllers/`** - State Management
+#### **`lib/controllers/`** - State Management
 Riverpod controllers for state management:
 - `user_info_controller.dart` - User profile state
 - `item_controller.dart` - Item listings state
 - `cart_controller.dart` - Shopping cart state
 
-##### **Root Files**
-- `main.dart` - Application entry point, Firebase initialization
-- `router.dart` - GoRouter configuration for navigation
-- `firebase_options.dart` - Firebase configuration
 
 #### **`assets/`** - Static Resources
 - `images/` - App images and icons
@@ -221,9 +219,6 @@ Riverpod controllers for state management:
 
 #### **Platform-specific Directories**
 - `android/` - Android-specific configuration
-- `ios/` - iOS-specific configuration
-- `web/` - Web platform support
-- `windows/`, `linux/`, `macos/` - Desktop platform support
 
 ---
 
@@ -278,7 +273,6 @@ Login Screen (Initial Route)
   - Email/password authentication
   - Auth state persistence across app restarts
   - Auth state changes monitored via Riverpod providers
-  - Located in: `lib/services/auth_service.dart`
 
 ### **Cloud Firestore**
 - **Purpose**: Primary database for all app data
@@ -293,7 +287,6 @@ Login Screen (Initial Route)
 - **Implementation**: 
   - Real-time data synchronization
   - Complex queries with filtering and sorting
-  - Located in: `lib/services/firestore_service.dart`
 
 ### **Firebase Cloud Storage**
 - **Purpose**: Store and retrieve images
@@ -305,7 +298,6 @@ Login Screen (Initial Route)
   - Image upload with compression
   - URL generation for display
   - File deletion on item removal
-  - Located in: `lib/services/storage_service.dart`
 
 ### **Firebase Cloud Messaging (FCM)**
 - **Purpose**: Push notifications for real-time updates
@@ -319,7 +311,6 @@ Login Screen (Initial Route)
   - Background and foreground message handling
   - Notification click handling with deep links
   - Local notifications integration
-  - Located in: `lib/services/notification_service.dart`
 
 ### **Firebase Cloud Functions** (Optional Backend)
 - **Purpose**: Server-side logic and automation
@@ -328,41 +319,9 @@ Login Screen (Initial Route)
 
 ---
 
-## 5. State Management
-
-### **Riverpod**
-- Provider-based state management throughout the app
-- **Key Providers**:
-  - `authStateChangesProvider` - Authentication state
-  - `userInfoControllerProvider` - User profile data
-  - `itemControllerProvider` - Item listings
-  - `cartProvider` - Shopping cart state
-  - Service providers for Firebase instances
-
-### **Local Storage**
-- **Hive** used for local caching and offline support
-- Initialized in `main.dart`
-
----
-
 ## 6. Challenges and Solutions
 
-### Challenge 1: Real-time Chat Synchronization
-**Problem**: Ensuring messages appear instantly for both sender and receiver without delays or duplicates, while maintaining message order and handling offline scenarios.
-
-**Solution**: 
-- Implemented Firestore real-time listeners with Stream builders
-- Used timestamp-based ordering for messages
-- Added message ID generation to prevent duplicates
-- Implemented optimistic UI updates (show message immediately, then confirm with server)
-- Created a robust chat service (`chat_service.dart`) with error handling
-- Added connection state monitoring to detect offline status
-
-**Result**: Smooth, instant messaging experience with proper error handling and offline support.
-
----
-
-### Challenge 2: Image Upload and Management
+### Challenge 1: Image Upload and Management
 **Problem**: Handling multiple image uploads per item, managing file sizes, ensuring proper storage organization, and displaying images efficiently without performance issues.
 
 **Solution**: 
@@ -377,7 +336,7 @@ Login Screen (Initial Route)
 
 ---
 
-### Challenge 3: Navigation and Auth State Management
+### Challenge 2: Navigation and Auth State Management
 **Problem**: Complex navigation requirements with authentication redirects, deep linking from notifications, and maintaining proper navigation stack while preventing unauthorized access.
 
 **Solution**: 
@@ -406,32 +365,8 @@ redirect: (context, state) {
 
 **Result**: Seamless navigation experience with proper authentication flow, deep linking support, and no unauthorized access to protected screens.
 
----
 
-### Challenge 4: CI/CD Pipeline Implementation
-**Problem**: Setting up automated build and deployment pipeline for a Flutter application with Firebase integration, ensuring consistent builds across different environments, and managing app signing and release configurations for Android.
-
-**Solution**: 
-- Configured GitHub Actions workflow for automated builds
-- Set up environment-specific Firebase configurations
-- Implemented automated testing in the pipeline
-- Configured Android signing for release builds
-- Created automated deployment scripts
-- Integrated build status checks and notifications
-- Managed secrets and credentials securely in CI/CD environment
-
-**Technical Implementation**:
-- Created workflow files in `.github/workflows/`
-- Configured build triggers for main branch and pull requests
-- Set up Flutter installation and dependency caching
-- Automated APK/AAB generation for Android releases
-- Integrated Firebase deployment for cloud functions
-
-**Result**: Automated, reliable build and deployment process that ensures code quality through automated testing and provides consistent builds for all team members and releases.
-
----
-
-### Challenge 5: Native Android Notification Implementation
+### Challenge 3: Native Android Notification Implementation
 **Problem**: Implementing push notifications that work reliably on Android devices, handling both foreground and background notification states, managing notification channels, and ensuring proper notification display with custom actions and deep linking.
 
 **Solution**: 
@@ -469,35 +404,3 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 - Ensuring notifications display in both foreground and background states
 
 **Result**: Fully functional push notification system that works reliably across different Android versions, properly displays notifications in all app states, and seamlessly navigates users to relevant screens when notifications are tapped.
-
----
-
-## 7. Technical Stack Summary
-
-### **Core Technologies**
-- **Framework**: Flutter 3.9.2
-- **Language**: Dart
-- **State Management**: Riverpod (flutter_riverpod)
-- **Routing**: GoRouter
-- **Local Database**: Hive
-
-### **Firebase Services**
-- Firebase Core
-- Firebase Authentication
-- Cloud Firestore
-- Firebase Storage
-- Firebase Cloud Messaging
-- (Optional) Cloud Functions
-
-### **Key Packages**
-- `image_picker` - Image selection
-- `flutter_local_notifications` - Local notification display
-- `hive` & `hive_flutter` - Local storage
-- `riverpod_annotation` - Code generation for providers
-- `build_runner` - Code generation tools
-
----
-
-## 8. Conclusion
-
-MUN Thrift successfully implements a comprehensive peer-to-peer marketplace application with all core features and multiple optional features. The app uses Firebase services for authentication, real-time data synchronization, file storage, and push notifications. The project uses clear software architecture according to best practice with clear separation of concerns (screens, services, models, controllers, git commits) and modern Flutter development practices including state management with Riverpod and declarative routing with GoRouter.
