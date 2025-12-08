@@ -319,7 +319,7 @@ Login Screen (Initial Route)
 
 ---
 
-## 6. Challenges and Solutions
+## 5. Challenges and Solutions
 
 ### Challenge 1: Image Upload and Management
 **Problem**: Handling multiple image uploads per item, managing file sizes, ensuring proper storage organization, and displaying images efficiently without performance issues.
